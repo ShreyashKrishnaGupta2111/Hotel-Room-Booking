@@ -16,6 +16,7 @@
       <div class="nav-links">
         <a href="#rooms">Rooms</a>
         <a href="#booking">Booking</a>
+        <a href="#availability">Availability</a>
         <a href="#contact">Contact</a>
       </div>
     </nav>
@@ -23,7 +24,7 @@
     <div class="hero-content">
       <p class="eyebrow">Luxury stays at transparent prices</p>
       <h1>Book your perfect hotel room in minutes.</h1>
-      <p class="hero-copy">Choose from Super Deluxe, Deluxe, Normal AC, and Non AC rooms with clear nightly pricing and instant total calculation.</p>
+      <p class="hero-copy">Choose from Super Deluxe, Deluxe, Normal AC, and Non AC rooms with live availability hints, flexible booking slots, and instant total calculation.</p>
       <a class="primary-btn" href="#booking">Start Booking</a>
     </div>
   </header>
@@ -34,7 +35,7 @@
         <p class="eyebrow">Why book with us</p>
         <h2 id="intro-title">Comfort for every budget</h2>
       </div>
-      <p>Compare room categories, facilities, and prices before reserving. The booking form updates your estimated stay cost automatically based on room type, number of nights, and guests.</p>
+      <p>Compare room categories, facilities, prices, capacities, and available inventory before reserving. The booking form validates dates, recommends the right room count, and updates your estimated stay cost automatically.</p>
     </section>
 
     <section class="section" id="rooms" aria-labelledby="rooms-title">
@@ -56,6 +57,7 @@
               <li>King bed</li>
               <li>Air conditioning</li>
               <li>Smart TV & Wi-Fi</li>
+              <li>Up to 4 guests • 3 rooms available</li>
             </ul>
           </div>
         </article>
@@ -72,6 +74,7 @@
               <li>Queen bed</li>
               <li>Air conditioning</li>
               <li>Work desk</li>
+              <li>Up to 3 guests • 5 rooms available</li>
             </ul>
           </div>
         </article>
@@ -88,6 +91,7 @@
               <li>Double bed</li>
               <li>Air conditioning</li>
               <li>Room service</li>
+              <li>Up to 3 guests • 8 rooms available</li>
             </ul>
           </div>
         </article>
@@ -104,33 +108,49 @@
               <li>Double bed</li>
               <li>Fan ventilation</li>
               <li>Private bathroom</li>
+              <li>Up to 2 guests • 10 rooms available</li>
             </ul>
           </div>
         </article>
       </div>
     </section>
 
+    <section class="section availability-section" id="availability" aria-labelledby="availability-title">
+      <div>
+        <p class="eyebrow">Live booking slots</p>
+        <h2 id="availability-title">Plan around room availability</h2>
+        <p class="availability-copy">Availability below is sample front-desk inventory for this demo. It helps customers understand how many rooms can be booked per category before they submit the request.</p>
+      </div>
+      <div class="availability-grid" id="availabilityGrid" aria-live="polite"></div>
+    </section>
+
     <section class="section booking-section" id="booking" aria-labelledby="booking-title">
       <div class="booking-copy">
         <p class="eyebrow">Reserve now</p>
-        <h2 id="booking-title">Check your booking estimate</h2>
-        <p>Enter your details and choose the room category. Your total price is calculated instantly so customers can see the cost before submitting.</p>
+        <h2 id="booking-title">Build a reliable booking request</h2>
+        <p>Choose dates, room category, booking slot, guests, and rooms. The form checks room capacity, inventory, and checkout date before showing a clear bill summary.</p>
         <div class="price-list" aria-label="Room price list">
-          <span>Super Deluxe ₹4,500</span>
-          <span>Deluxe ₹3,500</span>
-          <span>Normal AC ₹2,500</span>
-          <span>Non AC ₹1,500</span>
+          <span>Super Deluxe ₹4,500 • max 4 guests</span>
+          <span>Deluxe ₹3,500 • max 3 guests</span>
+          <span>Normal AC ₹2,500 • max 3 guests</span>
+          <span>Non AC ₹1,500 • max 2 guests</span>
         </div>
       </div>
 
-      <form class="booking-form" id="bookingForm">
-        <div class="form-row">
-          <label for="guestName">Full name</label>
-          <input id="guestName" name="guestName" type="text" placeholder="Enter your name" required>
+      <form class="booking-form" id="bookingForm" novalidate>
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="guestName">Full name</label>
+            <input id="guestName" name="guestName" type="text" placeholder="Enter your name" autocomplete="name" required>
+          </div>
+          <div class="form-row">
+            <label for="phone">Phone number</label>
+            <input id="phone" name="phone" type="tel" placeholder="98765 43210" autocomplete="tel" required>
+          </div>
         </div>
         <div class="form-row">
           <label for="email">Email address</label>
-          <input id="email" name="email" type="email" placeholder="you@example.com" required>
+          <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
         </div>
         <div class="form-grid">
           <div class="form-row">
@@ -144,25 +164,42 @@
         </div>
         <div class="form-grid">
           <div class="form-row">
-            <label for="roomType">Room category</label>
-            <select id="roomType" name="roomType" required>
-              <option value="4500">Super Deluxe Room - ₹4,500/night</option>
-              <option value="3500">Deluxe Room - ₹3,500/night</option>
-              <option value="2500">Normal AC Room - ₹2,500/night</option>
-              <option value="1500">Non AC Room - ₹1,500/night</option>
+            <label for="bookingSlot">Arrival slot</label>
+            <select id="bookingSlot" name="bookingSlot" required>
+              <option value="12:00 PM - 03:00 PM">Standard check-in: 12 PM - 3 PM</option>
+              <option value="03:00 PM - 06:00 PM">Afternoon: 3 PM - 6 PM</option>
+              <option value="06:00 PM - 09:00 PM">Evening: 6 PM - 9 PM</option>
+              <option value="09:00 PM - 11:00 PM">Late arrival: 9 PM - 11 PM</option>
             </select>
           </div>
           <div class="form-row">
-            <label for="guests">Guests</label>
-            <input id="guests" name="guests" type="number" min="1" max="6" value="2" required>
+            <label for="roomType">Room category</label>
+            <select id="roomType" name="roomType" required></select>
           </div>
         </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="guests">Guests</label>
+            <input id="guests" name="guests" type="number" min="1" max="20" value="2" required>
+          </div>
+          <div class="form-row">
+            <label for="rooms">Rooms required</label>
+            <input id="rooms" name="rooms" type="number" min="1" value="1" required>
+          </div>
+        </div>
+        <fieldset class="add-ons">
+          <legend>Optional add-ons</legend>
+          <label><input type="checkbox" name="addon" value="breakfast" data-price="500"> Breakfast buffet ₹500/night</label>
+          <label><input type="checkbox" name="addon" value="pickup" data-price="900"> Airport pickup ₹900 once</label>
+        </fieldset>
         <div class="total-box" aria-live="polite">
           <span>Estimated total</span>
           <strong id="totalPrice">₹4,500</strong>
           <small id="nightDetails">1 night × ₹4,500</small>
+          <div class="bill-lines" id="billLines"></div>
         </div>
-        <button class="primary-btn full-width" type="submit">Book Room</button>
+        <p class="form-alert" id="formAlert" role="alert"></p>
+        <button class="primary-btn full-width" type="submit">Confirm Booking Request</button>
         <p class="success-message" id="successMessage" role="status"></p>
       </form>
     </section>
@@ -182,6 +219,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-const checkIn = document.querySelector('#checkIn');
-const checkOut = document.querySelector('#c

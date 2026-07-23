@@ -1,165 +1,179 @@
-const bookingForm = document.querySelector('#bookingForm');
-const roomType = document.querySelector('#roomType');
-const bookingSlot = document.querySelector('#bookingSlot');
-const checkIn = document.querySelector('#checkIn');
-const checkOut = document.querySelector('#checkOut');
-const guests = document.querySelector('#guests');
-const rooms = document.querySelector('#rooms');
-const totalPrice = document.querySelector('#totalPrice');
-const nightDetails = document.querySelector('#nightDetails');
-const billLines = document.querySelector('#billLines');
-const successMessage = document.querySelector('#successMessage');
+const categoryTabs = document.querySelector('#categoryTabs');
+const menuGrid = document.querySelector('#menuGrid');
+const cartItems = document.querySelector('#cartItems');
+const clearCart = document.querySelector('#clearCart');
+const subtotal = document.querySelector('#subtotal');
+const serviceCharge = document.querySelector('#serviceCharge');
+const tax = document.querySelector('#tax');
+const grandTotal = document.querySelector('#grandTotal');
+const paymentForm = document.querySelector('#paymentForm');
+const paymentMethod = document.querySelector('#paymentMethod');
+const paymentReference = document.querySelector('#paymentReference');
 const formAlert = document.querySelector('#formAlert');
-const availabilityGrid = document.querySelector('#availabilityGrid');
+const successMessage = document.querySelector('#successMessage');
 
-const TAX_RATE = 0.12;
+const SERVICE_RATE = 0.05;
+const TAX_RATE = 0.05;
 
-const roomCatalog = [
-  { id: 'super-deluxe', name: 'Super Deluxe Room', price: 4500, capacity: 4, available: 3, badge: 'Premium' },
-  { id: 'deluxe', name: 'Deluxe Room', price: 3500, capacity: 3, available: 5, badge: 'Popular' },
-  { id: 'normal-ac', name: 'Normal AC Room', price: 2500, capacity: 3, available: 8, badge: 'Value' },
-  { id: 'non-ac', name: 'Non AC Room', price: 1500, capacity: 2, available: 10, badge: 'Budget' },
+const menuItems = [
+  { id: 'garlic-bread', category: 'Starters', name: 'Garlic Bread', price: 149, image: 'https://images.unsplash.com/photo-1619531038896-deaff53d1518?auto=format&fit=crop&w=900&q=80', description: 'Toasted bread with herbed garlic butter and cheese.' },
+  { id: 'fries', category: 'Starters', name: 'French Fries', price: 129, image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=80', description: 'Crispy golden fries served with house dip.' },
+  { id: 'wings', category: 'Starters', name: 'Chicken Wings', price: 299, image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=900&q=80', description: 'Spicy glazed wings with cooling ranch.' },
+  { id: 'spring-rolls', category: 'Starters', name: 'Spring Rolls', price: 189, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80', description: 'Crunchy vegetable rolls with sweet chilli sauce.' },
+  { id: 'caesar-salad', category: 'Salads', name: 'Caesar Salad', price: 249, image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=900&q=80', description: 'Romaine lettuce, parmesan, croutons, and creamy dressing.' },
+  { id: 'greek-salad', category: 'Salads', name: 'Greek Salad', price: 239, image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=80', description: 'Cucumber, olives, tomato, feta, and olive oil.' },
+  { id: 'burger', category: 'Entrées', name: 'Classic Burger', price: 329, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80', description: 'Juicy patty, cheese, lettuce, tomato, and signature sauce.' },
+  { id: 'pizza', category: 'Entrées', name: 'Margherita Pizza', price: 399, image: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=900&q=80', description: 'Fresh mozzarella, basil, and slow-cooked tomato sauce.' },
+  { id: 'alfredo-pasta', category: 'Entrées', name: 'Alfredo Pasta', price: 349, image: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=900&q=80', description: 'Creamy white sauce pasta with herbs and parmesan.' },
+  { id: 'biryani', category: 'Entrées', name: 'Hyderabadi Biryani', price: 379, image: 'https://images.unsplash.com/photo-1631515242808-497c3fbd3972?auto=format&fit=crop&w=900&q=80', description: 'Aromatic rice layered with spices and tender protein.' },
+  { id: 'butter-chicken', category: 'Entrées', name: 'Butter Chicken', price: 429, image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=900&q=80', description: 'Creamy tomato gravy with tandoori chicken pieces.' },
+  { id: 'paneer-masala', category: 'Entrées', name: 'Paneer Butter Masala', price: 349, image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=900&q=80', description: 'Soft paneer cubes in rich buttery gravy.' },
+  { id: 'naan', category: 'Sides', name: 'Butter Naan', price: 59, image: 'https://images.unsplash.com/photo-1617692855027-33b14f061079?auto=format&fit=crop&w=900&q=80', description: 'Soft tandoor bread brushed with butter.' },
+  { id: 'jeera-rice', category: 'Sides', name: 'Jeera Rice', price: 169, image: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=900&q=80', description: 'Basmati rice tempered with cumin and ghee.' },
+  { id: 'mashed-potato', category: 'Sides', name: 'Mashed Potatoes', price: 179, image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80', description: 'Creamy mashed potatoes with butter.' },
+  { id: 'brownie', category: 'Desserts', name: 'Brownie with Ice Cream', price: 249, image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80', description: 'Warm chocolate brownie topped with vanilla ice cream.' },
+  { id: 'cheesecake', category: 'Desserts', name: 'Cheesecake', price: 279, image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=80', description: 'Creamy baked cheesecake with berry compote.' },
+  { id: 'gulab-jamun', category: 'Desserts', name: 'Gulab Jamun', price: 149, image: 'https://images.unsplash.com/photo-1605197161470-5d2a9af5685b?auto=format&fit=crop&w=900&q=80', description: 'Soft milk dumplings soaked in saffron syrup.' },
+  { id: 'vanilla-icecream', category: 'Ice Cream', name: 'Vanilla Ice Cream', price: 119, image: 'https://images.unsplash.com/photo-1570197788417-0e82375c9371?auto=format&fit=crop&w=900&q=80', description: 'Classic vanilla scoop with chocolate drizzle.' },
+  { id: 'chocolate-icecream', category: 'Ice Cream', name: 'Chocolate Ice Cream', price: 139, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=80', description: 'Rich chocolate ice cream with choco chips.' },
+  { id: 'strawberry-icecream', category: 'Ice Cream', name: 'Strawberry Ice Cream', price: 139, image: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=900&q=80', description: 'Fruity strawberry scoop with fresh berry notes.' },
+  { id: 'lime-soda', category: 'Beverages', name: 'Fresh Lime Soda', price: 99, image: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=900&q=80', description: 'Refreshing sweet, salty, or mixed lime soda.' },
+  { id: 'masala-chai', category: 'Beverages', name: 'Masala Chai', price: 79, image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=80', description: 'Hot Indian tea brewed with warming spices.' },
+  { id: 'cold-coffee', category: 'Beverages', name: 'Cold Coffee', price: 159, image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=80', description: 'Chilled coffee shake with whipped cream.' },
+  { id: 'milkshake', category: 'Beverages', name: 'Chocolate Milkshake', price: 189, image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80', description: 'Thick chocolate shake finished with sprinkles.' },
 ];
 
+let activeCategory = 'All';
+const cart = new Map();
+
 const formatCurrency = (amount) => `₹${Math.round(amount).toLocaleString('en-IN')}`;
+const getQuantity = (id) => cart.get(id) || 0;
 
-const toDateInputValue = (date) => date.toISOString().split('T')[0];
-
-const getSelectedRoom = () => roomCatalog.find((room) => room.id === roomType.value) || roomCatalog[0];
-
-const getNights = () => {
-  const start = new Date(checkIn.value);
-  const end = new Date(checkOut.value);
-
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end <= start) {
-    return 1;
+const changeQuantity = (id, delta) => {
+  const nextQuantity = Math.max(0, getQuantity(id) + delta);
+  if (nextQuantity === 0) {
+    cart.delete(id);
+  } else {
+    cart.set(id, nextQuantity);
   }
-
-  const millisecondsPerNight = 1000 * 60 * 60 * 24;
-  return Math.ceil((end - start) / millisecondsPerNight);
+  renderMenu();
+  renderCart();
 };
 
-const getAddonTotals = (nights) => {
-  const selectedAddons = [...document.querySelectorAll('input[name="addon"]:checked')];
-  return selectedAddons.reduce((total, addon) => {
-    const price = Number(addon.dataset.price);
-    return total + (addon.value === 'breakfast' ? price * nights : price);
-  }, 0);
+const renderTabs = () => {
+  const categories = ['All', ...new Set(menuItems.map((item) => item.category))];
+  categoryTabs.innerHTML = categories.map((category) => `
+    <button class="tab-btn ${category === activeCategory ? 'active' : ''}" type="button" data-category="${category}">${category}</button>
+  `).join('');
 };
 
-const validateBooking = () => {
-  const selectedRoom = getSelectedRoom();
-  const roomCount = Number(rooms.value) || 1;
-  const guestCount = Number(guests.value) || 1;
-  const maxGuests = selectedRoom.capacity * roomCount;
+const renderMenu = () => {
+  const visibleItems = activeCategory === 'All'
+    ? menuItems
+    : menuItems.filter((item) => item.category === activeCategory);
 
-  if (new Date(checkOut.value) <= new Date(checkIn.value)) {
-    return 'Checkout must be at least one day after check-in.';
-  }
-
-  if (roomCount > selectedRoom.available) {
-    return `Only ${selectedRoom.available} ${selectedRoom.name.toLowerCase()} slots are available for this request.`;
-  }
-
-  if (guestCount > maxGuests) {
-    return `${selectedRoom.name} supports ${selectedRoom.capacity} guests per room. Add more rooms or reduce guests.`;
-  }
-
-  return '';
-};
-
-const updateTotal = () => {
-  const selectedRoom = getSelectedRoom();
-  const nights = getNights();
-  const roomCount = Number(rooms.value) || 1;
-  const roomSubtotal = selectedRoom.price * nights * roomCount;
-  const addonTotal = getAddonTotals(nights);
-  const tax = (roomSubtotal + addonTotal) * TAX_RATE;
-  const total = roomSubtotal + addonTotal + tax;
-  const validationMessage = validateBooking();
-
-  rooms.max = selectedRoom.available;
-  totalPrice.textContent = formatCurrency(total);
-  nightDetails.textContent = `${nights} ${nights === 1 ? 'night' : 'nights'} × ${roomCount} ${roomCount === 1 ? 'room' : 'rooms'} × ${formatCurrency(selectedRoom.price)}`;
-  billLines.innerHTML = `
-    <span>Room subtotal <strong>${formatCurrency(roomSubtotal)}</strong></span>
-    <span>Add-ons <strong>${formatCurrency(addonTotal)}</strong></span>
-    <span>Taxes & service fee (12%) <strong>${formatCurrency(tax)}</strong></span>
-    <span>Arrival slot <strong>${bookingSlot.value}</strong></span>
-  `;
-
-  formAlert.textContent = validationMessage;
-  bookingForm.classList.toggle('has-error', Boolean(validationMessage));
-};
-
-const renderRoomOptions = () => {
-  roomType.innerHTML = roomCatalog.map((room) => (
-    `<option value="${room.id}">${room.name} - ${formatCurrency(room.price)}/night - ${room.available} slots</option>`
-  )).join('');
-};
-
-const renderAvailability = () => {
-  availabilityGrid.innerHTML = roomCatalog.map((room) => `
-    <article class="availability-card">
-      <span>${room.badge}</span>
-      <h3>${room.name}</h3>
-      <p>${formatCurrency(room.price)} per night</p>
-      <strong>${room.available} rooms open</strong>
-      <small>Capacity: ${room.capacity} guests per room</small>
+  menuGrid.innerHTML = visibleItems.map((item) => `
+    <article class="menu-card">
+      <img src="${item.image}" alt="${item.name}" loading="lazy">
+      <div class="menu-content">
+        <span class="menu-category">${item.category}</span>
+        <div class="menu-title-row">
+          <h3>${item.name}</h3>
+          <strong>${formatCurrency(item.price)}</strong>
+        </div>
+        <p>${item.description}</p>
+        <div class="quantity-controls" aria-label="Quantity controls for ${item.name}">
+          <button type="button" data-id="${item.id}" data-action="decrease" aria-label="Remove one ${item.name}">−</button>
+          <span>${getQuantity(item.id)}</span>
+          <button type="button" data-id="${item.id}" data-action="increase" aria-label="Add one ${item.name}">+</button>
+        </div>
+      </div>
     </article>
   `).join('');
 };
 
-const setDefaultDates = () => {
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
-
-  checkIn.valueAsDate = today;
-  checkOut.valueAsDate = tomorrow;
-  checkIn.min = toDateInputValue(today);
-  checkOut.min = toDateInputValue(tomorrow);
+const getCartDetails = () => {
+  const items = [...cart.entries()].map(([id, quantity]) => {
+    const item = menuItems.find((menuItem) => menuItem.id === id);
+    return { ...item, quantity, total: item.price * quantity };
+  });
+  const subtotalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  const serviceAmount = subtotalAmount * SERVICE_RATE;
+  const taxAmount = subtotalAmount * TAX_RATE;
+  const grandAmount = subtotalAmount + serviceAmount + taxAmount;
+  return { items, subtotalAmount, serviceAmount, taxAmount, grandAmount };
 };
 
-checkIn.addEventListener('change', () => {
-  const minimumCheckout = new Date(checkIn.value);
-  minimumCheckout.setDate(minimumCheckout.getDate() + 1);
-  checkOut.min = toDateInputValue(minimumCheckout);
+const renderCart = () => {
+  const details = getCartDetails();
+  cartItems.innerHTML = details.items.length ? details.items.map((item) => `
+    <div class="cart-item">
+      <div>
+        <strong>${item.name}</strong>
+        <small>${item.quantity} × ${formatCurrency(item.price)}</small>
+      </div>
+      <span>${formatCurrency(item.total)}</span>
+    </div>
+  `).join('') : '<p class="empty-cart">Your cart is empty. Add delicious items from the menu.</p>';
 
-  if (new Date(checkOut.value) <= new Date(checkIn.value)) {
-    checkOut.valueAsDate = minimumCheckout;
-  }
+  subtotal.textContent = formatCurrency(details.subtotalAmount);
+  serviceCharge.textContent = formatCurrency(details.serviceAmount);
+  tax.textContent = formatCurrency(details.taxAmount);
+  grandTotal.textContent = formatCurrency(details.grandAmount);
+};
 
-  updateTotal();
+categoryTabs.addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-category]');
+  if (!button) return;
+  activeCategory = button.dataset.category;
+  renderTabs();
+  renderMenu();
 });
 
-[checkOut, roomType, bookingSlot, guests, rooms, ...document.querySelectorAll('input[name="addon"]')]
-  .forEach((field) => field.addEventListener('change', updateTotal));
+menuGrid.addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-id]');
+  if (!button) return;
+  changeQuantity(button.dataset.id, button.dataset.action === 'increase' ? 1 : -1);
+});
 
-bookingForm.addEventListener('submit', (event) => {
+clearCart.addEventListener('click', () => {
+  cart.clear();
+  renderMenu();
+  renderCart();
+  successMessage.textContent = '';
+});
+
+paymentMethod.addEventListener('change', () => {
+  paymentReference.required = paymentMethod.value !== 'Cash on Delivery';
+});
+
+paymentForm.addEventListener('submit', (event) => {
   event.preventDefault();
   successMessage.textContent = '';
+  formAlert.textContent = '';
 
-  if (!bookingForm.checkValidity()) {
-    bookingForm.reportValidity();
+  const details = getCartDetails();
+  if (!details.items.length) {
+    formAlert.textContent = 'Please add at least one menu item before payment.';
     return;
   }
 
-  const validationMessage = validateBooking();
-  if (validationMessage) {
-    formAlert.textContent = validationMessage;
+  paymentReference.required = paymentMethod.value !== 'Cash on Delivery';
+  if (!paymentForm.checkValidity()) {
+    paymentForm.reportValidity();
     return;
   }
 
-  const selectedRoom = getSelectedRoom();
-  const confirmationId = `GH-${Date.now().toString().slice(-6)}`;
-  successMessage.textContent = `Booking request ${confirmationId} received for ${rooms.value} ${selectedRoom.name.toLowerCase()} during ${bookingSlot.value}. We will contact you shortly.`;
-  bookingForm.reset();
-  setDefaultDates();
-  updateTotal();
+  const orderId = `SGB-${Date.now().toString().slice(-6)}`;
+  successMessage.textContent = `Order ${orderId} placed successfully via ${paymentMethod.value}. Amount paid: ${formatCurrency(details.grandAmount)}.`;
+  cart.clear();
+  paymentForm.reset();
+  paymentReference.required = true;
+  renderMenu();
+  renderCart();
 });
 
-renderRoomOptions();
-renderAvailability();
-setDefaultDates();
-updateTotal();
+renderTabs();
+renderMenu();
+renderCart();
+paymentReference.required = true;
